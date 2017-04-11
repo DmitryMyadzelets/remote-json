@@ -16,7 +16,7 @@ const assert = (function () {
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 
-console.log('Expected ' + 28 + ' tests passed');
+console.log('Expected ' + 27 + ' tests passed');
 
 
 const remote = require('../').remote;
@@ -33,7 +33,6 @@ json.get(function (err, res, body) {
     assert(!err);
     assert(200 === res.statusCode);
     assert(body instanceof Array);
-    assert(100 === body.length);
 });
 
 
