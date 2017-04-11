@@ -60,6 +60,7 @@ console.log(obj.options.put);
 //     }
 // }
 ```
+You can modify them. Remember, that if you can set options for all methods in the constructor `remote(http, url , opt)`.
 
 ## Tests
 
