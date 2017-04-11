@@ -64,23 +64,24 @@ function method(opt, data, cb, path) {
         req.write(JSON.stringify(data));
     }
     req.end();
+    return this;
 }
 
 
 // ============================================================================
 //
-function Remote(http, uri) {
+function Remote(http, uri, opt) {
     this.http = http;
 
     const parsed = url.parse(uri);
     this.options = {
-        get: {
+        get: copy({
             host: parsed.host,
             path: parsed.path,
             headers: {
                 'Content-Type': 'application/json'
             }
-        }
+        }, opt)
     };
     this.options.post = copy(this.options.get, {method: 'POST'});
     this.options.put = copy(this.options.get, {method: 'PUT'});
