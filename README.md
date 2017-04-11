@@ -52,6 +52,7 @@ var remote = require('json-remote').remote;
 var obj = remote(http, `http://echo.jsontest.com/key/value/name/Bob`);
 console.log(obj.options.put);
 // {
+//     method: 'PUT',
 //     host: 'echo.jsontest.com',
 //     path: '/key/value/name/Bob',
 //     headers: {
