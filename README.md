@@ -1,8 +1,8 @@
 # remote-json
 
-Node.js HTTP/HTTPS client for JSON APIs. Supports `GET`, `PUT`, `POST` and `PUTCH` methods.
+Node.js HTTP/HTTPS client for JSON APIs. Supports `GET`, `PUT`, `POST` and `PATCH` methods.
 
-    npm install(remote-json)
+    npm install('remote-json')
 
 ## Usage
 
@@ -22,16 +22,17 @@ json.remote(http, 'http://echo.jsontest.com/key/value/name/Bob')
 ### remote(http, url[, opt])
 Returns a new instance of `Remote` object with JSON API's methods.
 
-    `http` - Should be either `require('http')` or `require('http')`.
-    `url` - A full URL string.
-    `opt` - HTTP options object.
+- `http` - Should be either `http` or `https` Node.js modules.
+- `url` - A full URL string.
+- `opt` - A HTTP options object.
 
 ### Remote.get([object,] callback[, path])
-    `object` - Optional. If given, will be send as JSON with request.
-    `callback` - Callback function
-    `path` - Optional. A path which will be added to the URL
 
-If `path` is present, `object` should also be given. E.g the following requests are valid:
+- `object` - Optional. If given, will be send as JSON with request.
+- `callback` - Callback function.
+- `path` - Optional. A path which will be added to the URL.
+
+If `path` is present, then `object` is required. E.g the following requests are valid:
 
 ```javascript
 remote(http, 'http://json.api')
@@ -41,10 +42,10 @@ remote(http, 'http://json.api')
 ```
 
 ### Remote.[post, put, del, patch]
-These methods are equal to the `.get` method.
+The parameters for these methods are similar to the ones of the `.get` method.
 
 ## HTTP options
-The options are created or each method. For example:
+The options are created for each method. For example:
 
 ```javascript
 var remote = require('json-remote').remote;
@@ -64,7 +65,8 @@ console.log(obj.options.put);
     npm test
 
 Tests use online services: 
-    - https://jsonplaceholder.typicode.com
-    - http://echo.jsontest.com
+
+- https://jsonplaceholder.typicode.com
+- http://echo.jsontest.com
 
 They may be down for the momemnt you test this module.
