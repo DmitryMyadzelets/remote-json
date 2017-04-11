@@ -37,38 +37,31 @@ json.get(function (err, res, body) {
 });
 
 
-// post
-json.post({ok: true}, function (err, res, body) {
-    assert(!err);
-    assert(201 === res.statusCode);
-    assert(true === body.ok);
-});
-
-
-// put
-json.put({ok: true}, function (err, res, body) {
-    assert(!err);
-    assert(200 === res.statusCode);
-    assert(true === body.ok);
-    assert(1 === body.id);
-}, '/1');
-
-
-// patch
-json.patch({ok: true}, function (err, res, body) {
-    assert(!err);
-    assert(200 === res.statusCode);
-    assert(true === body.ok);
-    assert('string' === typeof body.title);
-    assert(2 === body.id);
-}, '/2');
-
-
-json.del({}, function (err, res, body) {
-    assert(!err);
-    assert(200 === res.statusCode);
-    assert(!!body);
-}, '/3');
+// post, put, patch, del
+json
+    .post({ok: true}, function (err, res, body) {
+        assert(!err);
+        assert(201 === res.statusCode);
+        assert(true === body.ok);
+    })
+    .put({ok: true}, function (err, res, body) {
+        assert(!err);
+        assert(200 === res.statusCode);
+        assert(true === body.ok);
+        assert(1 === body.id);
+    }, '/1')
+    .patch({ok: true}, function (err, res, body) {
+        assert(!err);
+        assert(200 === res.statusCode);
+        assert(true === body.ok);
+        assert('string' === typeof body.title);
+        assert(2 === body.id);
+    }, '/2')
+    .del({}, function (err, res, body) {
+        assert(!err);
+        assert(200 === res.statusCode);
+        assert(!!body);
+    }, '/3');
 
 
 // Some additional tests
