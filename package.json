@@ -1,0 +1,28 @@
+{
+  "name": "remote-json",
+  "version": "0.1.0",
+  "description": "HTTP/HTTPS client for JSON APIs",
+  "main": "index.js",
+  "scripts": {
+    "test": "node tests/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DmitryMyadzelets/remote-json.git"
+  },
+  "keywords": [
+    "JSON",
+    "HTTP",
+    "HTTPS",
+    "REST",
+    "API",
+    "client",
+    "simple"
+  ],
+  "author": "Dmitry Myadzelets",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/DmitryMyadzelets/remote-json/issues"
+  },
+  "homepage": "https://github.com/DmitryMyadzelets/remote-json#readme"
+}
