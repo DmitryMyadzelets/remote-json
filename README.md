@@ -55,7 +55,7 @@ get({id: 456})({id: 78});
 ### Remote.[post, put, del, patch]
 Usage for these methods is similar to the one of the `.get` method.
 
-### HTTP options
+## HTTP options
 
 Pass it to the constructor:
 ```javascript
@@ -65,6 +65,10 @@ remote(http, 'http://json.api', {
     }
 });
 ```
+
+## Redirects
+
+This client doesn't follow redirects. Use the [`follow-redirects`](https://www.npmjs.com/package/follow-redirects) module for this.
 
 ## Tests
 
