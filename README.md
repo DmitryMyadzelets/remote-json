@@ -14,7 +14,7 @@ json.remote(http, 'http://echo.jsontest.com/key/value/name/Bob')
     .get(function (err, res, body) {
         console.log(res.statusCode); // 200
         console.log(body); // {"name": "Bob", "key": "value"}
-    });
+    })();
 ```
 
 ## API
@@ -26,41 +26,45 @@ Returns a new instance of `Remote` object with JSON API's methods.
 - `url` - A full URL string.
 - `opt` - A HTTP options object.
 
-### Remote.get([object,] callback[, path])
+### Remote.get([path,] callback)
+Returns a function for `GET` method.
 
-- `object` - Optional. If given, will be send as JSON with request.
-- `callback` - Callback function.
 - `path` - Optional. A path which will be added to the URL.
+- `callback` - Callback function.
 
-If `path` is present, then `object` is required. E.g the following requests are valid:
-
+You can than invoke the method immediately or, if used many times, assign to a variable:
 ```javascript
-remote(http, 'http://json.api')
-    .get(callback)
-    .get({id: 123}, callback)
-    .get({id: 123}, callback, '/users'); // GET 'http://json.api/users'
+remote(http, 'http://json.api').get(callback)();
+// or
+var get = remote(http, 'http://json.api').get(callback);
+get();
+```
+Many paths at one remote:
+```javascript
+var remote = remote(http, 'http://json.api');
+remote.get('/users', callbackUsers)();
+remote.get('/books', callbackBooks)();
+```
+Send data on request:
+```javascript
+var get = remote.get('/users', callback);
+get({id: 123});
+get({id: 456})({id: 78});
 ```
 
 ### Remote.[post, put, del, patch]
-The parameters for these methods are similar to the ones of the `.get` method.
+Usage for these methods is similar to the one of the `.get` method.
 
-## HTTP options
-The options are created for each method. For example:
+### HTTP options
 
+Pass it to the constructor:
 ```javascript
-var remote = require('json-remote').remote;
-var obj = remote(http, `http://echo.jsontest.com/key/value/name/Bob`);
-console.log(obj.options.put);
-// {
-//     method: 'PUT',
-//     host: 'echo.jsontest.com',
-//     path: '/key/value/name/Bob',
-//     headers: {
-//         'Content-Type': 'application/json'
-//     }
-// }
+remote(http, 'http://json.api', {
+    headers: {
+        Cookie: 'Your cookie'
+    }
+});
 ```
-You can modify them. Remember, that if you can set options for all methods in the constructor `remote(http, url , opt)`.
 
 ## Tests
 
