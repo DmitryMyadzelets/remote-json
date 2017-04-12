@@ -17,56 +17,73 @@ function copy(object, dest) {
 }
 
 
-// HTTP response callback
-function response(cb, res) {
-    var body;
+// Returns HTTP response callback
+const response = (function () {
+    const CT = 'content-type';
+    const AJ = 'application/json';
+    var type;
 
     function data(d) {
-        if (undefined === body) {
-            body = '';
+        if (undefined === this.body) {
+            this.body = '';
         }
-        body += d;
+        this.body += d;
     }
 
-    function end() {
-        // Parse body as JSON if necessary
-        const type = '' + res.headers['content-type'];
-        const isJSON = type.includes('application/json');
-        if (isJSON) {
+    function end(callback, res) {
+        type = res.headers[CT];
+        // If JSON, then parse it
+        if (type && '' + type && type.includes(AJ)) {
             try {
-                body = JSON.parse(body);
+                this.body = JSON.parse(this.body);
             } catch (err) {
-                cb(err);
+                callback(err);
             }
         }
-        cb(null, res, body);
-        body = null;
+        callback(null, res, this.body);
+        this.body = null;
     }
 
-    res.setEncoding('utf8').on('data', data).on('end', end);
-}
+    return function (callback, res) {
+        const o = {
+            body: undefined
+        };
+
+        res.setEncoding('utf8')
+            .on('data', data.bind(o))
+            .on('end', end.bind(o, callback, res));
+    };
+}());
 
 
-// Template for REST methods
-function method(opt, data, cb, path) {
-    if ('function' === typeof data) {
-        cb = data;
-        data = undefined;
+// Returns a HTTP method
+function method(opt, path, callback) {
+    if ('function' === typeof path) {
+        callback = path;
+        path = undefined;
     }
+
     // Add path if any
     if (path) {
         opt = copy(opt);
         opt.path += path;
     }
-    const req = this.http.request(opt, response.bind(this, cb));
-    req.on('error', cb);
-    if (undefined !== data) {
-        req.write(JSON.stringify(data));
-    }
-    req.end();
-    return this;
-}
 
+    const res = response.bind(this, callback);
+    const self = this;
+    var req;
+
+    function request(data) {
+        req = self.http.request(opt, res);
+        req.on('error', callback);
+        if (undefined !== data) {
+            req.write(JSON.stringify(data));
+        }
+        req.end();
+        return request;
+    }
+    return request;
+}
 
 // ============================================================================
 //
@@ -74,45 +91,23 @@ function Remote(http, uri, opt) {
     this.http = http;
 
     const parsed = url.parse(uri);
-    this.options = {
-        get: copy({
-            host: parsed.host,
-            path: parsed.path,
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }, opt)
-    };
-    this.options.post = copy(this.options.get, {method: 'POST'});
-    this.options.put = copy(this.options.get, {method: 'PUT'});
-    this.options.patch = copy(this.options.get, {method: 'PATCH'});
-    this.options.del = copy(this.options.get, {method: 'DELETE'});
+    opt = copy({
+        host: parsed.host,
+        path: parsed.path
+    }, opt);
+    opt.headers = opt.headers || {};
+    opt.headers['Content-Type'] = 'application/json'
+
+    // Constructors of HTTP methods
+    this.post = method.bind(this, copy(opt, {method: 'POST'}));
+    this.get = method.bind(this, copy(opt, {method: 'GET'}));
+    this.put = method.bind(this, copy(opt, {method: 'PUT'}));
+    this.del = method.bind(this, copy(opt, {method: 'DELETE'}));
+    this.patch = method.bind(this, copy(opt, {method: 'PATCH'}));
 }
-
-
-Remote.prototype.get = function (data, cb, path) {
-    return method.call(this, this.options.get, data, cb, path);
-};
-
-Remote.prototype.post = function (data, cb, path) {
-    return method.call(this, this.options.post, data, cb, path);
-};
-
-Remote.prototype.put = function (data, cb, path) {
-    return method.call(this, this.options.put, data, cb, path);
-};
-
-Remote.prototype.patch = function (data, cb, path) {
-    return method.call(this, this.options.patch, data, cb, path);
-};
-
-Remote.prototype.del = function (data, cb, path) {
-    return method.call(this, this.options.del, data, cb, path);
-};
-
 
 // ============================================================================
 // Module exports
-exports.remote = function (http, uri) {
-    return new Remote(http, uri);
+exports.remote = function (http, uri, opt) {
+    return new Remote(http, uri, opt);
 };
