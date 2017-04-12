@@ -1,6 +1,6 @@
 # remote-json
 
-Node.js HTTP/HTTPS client for JSON APIs. Supports `GET`, `PUT`, `POST` and `PATCH` methods.
+Node.js HTTP/HTTPS client for JSON APIs. Supports `GET`, `PUT`, `POST`, `DELETE` and `PATCH` methods.
 
     npm install('remote-json')
 
