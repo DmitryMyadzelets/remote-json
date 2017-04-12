@@ -96,7 +96,7 @@ function Remote(http, uri, opt) {
         path: parsed.path
     }, opt);
     opt.headers = opt.headers || {};
-    opt.headers['Content-Type'] = 'application/json'
+    opt.headers['Content-Type'] = 'application/json';
 
     // Constructors of HTTP methods
     this.post = method.bind(this, copy(opt, {method: 'POST'}));
