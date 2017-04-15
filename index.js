@@ -108,6 +108,6 @@ function Remote(http, uri, opt) {
 
 // ============================================================================
 // Module exports
-exports.remote = function (http, uri, opt) {
+module.exports = function (http, uri, opt) {
     return new Remote(http, uri, opt);
 };

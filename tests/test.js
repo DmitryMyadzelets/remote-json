@@ -19,7 +19,7 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 console.log('Expected ' + 25 + ' tests passed');
 
 
-const remote = require('../').remote;
+const remote = require('../');
 const json = remote(https, 'https://jsonplaceholder.typicode.com/posts');
 
 
