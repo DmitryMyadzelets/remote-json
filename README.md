@@ -62,8 +62,8 @@ remote('http://json.api', {
 This client doesn't follow redirects. Use the [`follow-redirects`](https://www.npmjs.com/package/follow-redirects) module for this:
 
 ```javascript
-redirect.http = require('follow-redirects').http;
-redirect.https = require('follow-redirects').https;
+remote.http = require('follow-redirects').http;
+remote.https = require('follow-redirects').https;
 ```
 
 ## Tests
