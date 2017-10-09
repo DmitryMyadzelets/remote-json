@@ -1,12 +1,11 @@
 /*jslint browser: false*/
 'use strict';
 
-var url = require('url');
+const url = require('url');
 
 
 // ============================================================================
 // Helpers
-
 
 // Returns a copy of the object
 function copy(object, dest) {
@@ -17,11 +16,25 @@ function copy(object, dest) {
 }
 
 
+// Content types we parse as JSON
+const contentTypes = {
+    'application/json': true
+};
+
+
+// Checks if the given content type is one we accept
+// Note: NodeJS makes HTTP headers lower case by default
+function inContentTypes(type) {
+    type += '';
+    return Object.keys(contentTypes).some(function (ct) {
+        return type.includes(ct);
+    });
+}
+
+
 // Returns HTTP response callback
 const response = (function () {
     const CT = 'content-type';
-    const AJ = 'application/json';
-    var type;
 
     function data(d) {
         if (undefined === this.body) {
@@ -31,9 +44,8 @@ const response = (function () {
     }
 
     function end(callback, res) {
-        type = res.headers[CT];
-        // If JSON, then parse it
-        if (type && '' + type && type.includes(AJ)) {
+        // Parse accepted content types as JSON
+        if (inContentTypes(res.headers[CT])) {
             try {
                 this.body = JSON.parse(this.body);
             } catch (err) {
@@ -111,3 +123,5 @@ function Remote(http, uri, opt) {
 module.exports = function (http, uri, opt) {
     return new Remote(http, uri, opt);
 };
+
+module.exports.contentTypes = contentTypes;
