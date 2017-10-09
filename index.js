@@ -105,7 +105,6 @@ function method(opt, path, data, callback) {
 
 // ============================================================================
 //
-var http, https;
 
 function Remote(uri, opt) {
     const parsed = url.parse(uri);
@@ -118,15 +117,15 @@ function Remote(uri, opt) {
 
     // Set required protocol (http is default)
     if ('https' === parsed.protocol) {
-        if (!https) {
-            https = require('https');
+        if (!module.exports.https) {
+            module.exports.https = require('https');
         }
-        this.http = https;
+        this.http = module.exports.https;
     } else {
-        if (!http) {
-            http = require('http');
+        if (!module.exports.http) {
+            module.exports.http = require('http');
         }
-        this.http = http;
+        this.http = module.exports.http;
     }
 
     // Constructors of HTTP methods
