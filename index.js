@@ -69,10 +69,20 @@ const response = (function () {
 
 
 // Returns a HTTP method
-function method(opt, path, callback) {
+function method(opt, path, data, callback) {
+    // Check permutation of arguments
     if ('function' === typeof path) {
         callback = path;
         path = undefined;
+        data = undefined;
+    } else if ('function' === typeof data) {
+        callback = data;
+        if ('string' === typeof path) {
+            data = undefined;
+        } else {
+            data = path;
+            path = undefined;
+        }
     }
 
     // Add path if any
@@ -82,26 +92,22 @@ function method(opt, path, callback) {
     }
 
     const res = response.bind(this, callback);
-    const self = this;
-    var req;
+    const req = this.http.request(opt, res);
 
-    function request(data) {
-        req = self.http.request(opt, res);
-        req.on('error', callback);
-        if (undefined !== data) {
-            req.write(JSON.stringify(data));
-        }
-        req.end();
-        return request;
+    req.on('error', callback);
+
+    if ('object' === typeof data && data !== null) {
+        req.write(JSON.stringify(data));
     }
-    return request;
+
+    req.end();
 }
 
 // ============================================================================
 //
-function Remote(http, uri, opt) {
-    this.http = http;
+var http, https;
 
+function Remote(uri, opt) {
     const parsed = url.parse(uri);
     opt = copy({
         host: parsed.host,
@@ -109,6 +115,19 @@ function Remote(http, uri, opt) {
     }, opt);
     opt.headers = opt.headers || {};
     opt.headers['Content-Type'] = 'application/json';
+
+    // Set required protocol (http is default)
+    if ('https' === parsed.protocol) {
+        if (!https) {
+            https = require('https');
+        }
+        this.http = https;
+    } else {
+        if (!http) {
+            http = require('http');
+        }
+        this.http = http;
+    }
 
     // Constructors of HTTP methods
     this.post = method.bind(this, copy(opt, {method: 'POST'}));
@@ -120,8 +139,8 @@ function Remote(http, uri, opt) {
 
 // ============================================================================
 // Module exports
-module.exports = function (http, uri, opt) {
-    return new Remote(http, uri, opt);
+module.exports = function (uri, opt) {
+    return new Remote(uri, opt);
 };
 
 module.exports.contentTypes = contentTypes;
