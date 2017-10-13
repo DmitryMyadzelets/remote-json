@@ -1,6 +1,6 @@
 {
   "name": "remote-json",
-  "version": "4.1.2",
+  "version": "4.1.3",
   "description": "HTTP/HTTPS client for JSON APIs",
   "main": "index.js",
   "scripts": {
