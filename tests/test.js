@@ -14,7 +14,7 @@ const assert = (function () {
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 
-console.log('Expected ' + 25 + ' tests passed');
+console.log('Expected ' + 26 + ' tests passed');
 
 
 const remote = require('../');
@@ -73,5 +73,12 @@ json.del('/3', function (err, res, body) {
         assert(200 === res.statusCode);
         assert('This error came from the org.json reference parser.' === body.error_info);
     });
+
+    // Check the protocol should be valid
+    try {
+        remote('ftp://wrong.protocol.com');
+    } catch (e) {
+        assert(e.message === 'Not supported protocol: ftp:');
+    }
 
 }());
