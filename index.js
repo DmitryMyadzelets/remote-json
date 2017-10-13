@@ -120,17 +120,21 @@ function Remote(uri, opt) {
     opt.headers = opt.headers || {};
     opt.headers['Content-Type'] = 'application/json';
 
-    // Set required protocol (http is default)
-    if ('https' === parsed.protocol) {
+    switch (parsed.protocol) {
+    case 'https:':
         if (!module.exports.https) {
             module.exports.https = require('https');
         }
         this.http = module.exports.https;
-    } else {
+        break;
+    case 'http:':
         if (!module.exports.http) {
             module.exports.http = require('http');
         }
         this.http = module.exports.http;
+        break;
+    default:
+        throw new Error('Not supported protocol: ' + parsed.protocol);
     }
 
     // Constructors of HTTP methods
