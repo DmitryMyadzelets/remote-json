@@ -27,7 +27,7 @@ const contentTypes = {
 function inContentTypes(type) {
     type += '';
     return Object.keys(contentTypes).some(function (ct) {
-        return type.includes(ct);
+        return type.includes(ct) && contentTypes[ct];
     });
 }
 
@@ -45,13 +45,18 @@ const response = (function () {
 
     function end(callback, res) {
         // Parse accepted content types as JSON
-        if (inContentTypes(res.headers[CT])) {
-            try {
-                this.body = JSON.parse(this.body);
-            } catch (err) {
-                callback(err);
-            }
+        if (!inContentTypes(res.headers[CT])) {
+            callback(new Error('Content type \"'
+                    + res.headers[CT]
+                    + '\" failed the check against '
+                    + JSON.stringify(contentTypes)), res, this.body);
         }
+        try {
+            this.body = JSON.parse(this.body);
+        } catch (err) {
+            callback(err, res, this.body);
+        }
+
         callback(null, res, this.body);
         this.body = null;
     }
