@@ -46,6 +46,14 @@ remote.get('/users', {id: 78}, callback);
 ### Remote.[post, put, del, patch]
 Usage for these methods is equal to the one of the `.get` method.
 
+### HTTP JSON Content Types
+
+According to the [standard](https://www.ietf.org/rfc/rfc4627.txt), the MIME media type for JSON text is `application/json`. This module checks if the type is valid. You may enable any other type to pass the validation, e.g.:
+
+```javascript
+remote.contentTypes['text/javascript'] = true;
+```
+
 ## HTTP options
 
 Pass it to the constructor:
