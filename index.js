@@ -44,21 +44,21 @@ const response = (function () {
     }
 
     function end(callback, res) {
-        // Parse accepted content types as JSON
-        if (!inContentTypes(res.headers[CT])) {
-            callback(new Error('Content type \"'
-                    + res.headers[CT]
-                    + '\" failed the check against '
-                    + JSON.stringify(contentTypes)), res, this.body);
-        }
         try {
-            this.body = JSON.parse(this.body);
+            // Parse accepted content types as JSON
+            if (!inContentTypes(res.headers[CT])) {
+                throw new Error('Content type \"'
+                        + res.headers[CT]
+                        + '\" failed the check against '
+                        + JSON.stringify(contentTypes));
+            }
+
+            callback(null, res, JSON.parse(this.body));
+
         } catch (err) {
-            callback(err, res, this.body);
+            return callback(err, res, this.body);
         }
 
-        callback(null, res, this.body);
-        this.body = null;
     }
 
     return function (callback, res) {
