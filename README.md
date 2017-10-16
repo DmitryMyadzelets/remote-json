@@ -65,6 +65,18 @@ remote('http://json.api', {
 });
 ```
 
+## HTTP status codes
+
+This module ALWAYS tries to parse the response body as JSON regardless the response status code. You may need to take of it since some API's may return no content as a valid response, e.g. `204` status code:
+
+```javascript
+remote('http://json.api').post({}, function (err, res, body) {
+    if (!err || 204 === res.statusCode) {
+        // ok
+    }
+});
+```
+
 ## Redirects
 
 This client doesn't follow redirects. Use the [`follow-redirects`](https://www.npmjs.com/package/follow-redirects) module for this:
